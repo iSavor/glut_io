@@ -6,4 +6,4 @@ MAKE GLUT GREAT AGAIN!
 
 Contributors:
 
-Qianmeng Chem, Kevin Qian
+Qianmeng Chem, Kevin Qian, Jackie Yang
