@@ -7,11 +7,11 @@ function vector(x, y) {
 	this.y = y;
 }
 
-function rigid(id, weight, x, y, vx, vy, fx, fy) {
+function rigid(id, weight, x, y, vx, vy, rotate, omega) {
 	this.id = id;
 	this.weight = weight;
 	this.position = new vector(x, y);
 	this.v = new vector(vx, vy);
-	this.F = new vector(fx, fy);
-	//rotation???
+	this.rotate = rotate;
+	this.omega = omega;
 }

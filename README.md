@@ -1,9 +1,17 @@
 # glut_io
 
+## Description
+
 MAKE GLUT GREAT AGAIN!
 
 
 
-Contributors:
+## Features
 
-Qianmeng Chem, Kevin Qian, Jackie Yang
+
+
+## Website
+
+## License
+
+The project is licensed under the MIT License. 
