@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Glut</title>
+	<script src="Queue.js"></script>
+	<script src="models.js"></script>
+	<script src="socket.io.js"></script>
+	<script src="phaser.js"></script>
+	<script>
+		//Both are queues of type msg defined in models.js
+		producer = new Queue();
+		consumer = new Queue();
+		players = [];
+
+		producer_handlers = {
+		};
+		consumer_handlers = {
+			"update": function(new_players) {
+				players = new_players;
+				//Performance!!
+				//Brute-force replacing might raise performance issue
+				console.log(players.length);
+			}
+		};
+
+	</script>
+	<script src="client.js"></script>
+	<script src="game.js"></script>
+</head>
+<body>
+</body>
+</html>
