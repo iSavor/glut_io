@@ -5,63 +5,161 @@
 */
 
 /**
-  * @desc encapsulation of this module
-*/
-module.exports = {
-	rigid_body: rigid,
-    vector: vector
-};
-
-/**
   * @desc a 2-D vector class
   * @param float $x, float $y -- the coordinates of this vector
 */
-function vector(x, y) {
-	this.x = x;
-	this.y = y;
+class Vector {
     /**
-      * @desc negate this vector
-      * @return vector -this
-    */
-    this.negate = function() {
-        var result = new vector(-this.x, -this.y);
-        return result;
-    };
+     * @desc constructor of the vector class
+     * @param x
+     * @param y
+     * @param optional isPoint (differentiate vector and point) (default should be false)
+     */
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+
     /**
-      * @desc add another vectors 
-      * @param vector $other -- the vector to be added
-      * @return vector this+other
-    */
-    this.add = function(other) {
-        var result = new vector(this.x+other.x, this.y+other.y);
-        return result;
-    };
+     * KSM: HIGHLIGHTS
+     * copy(), negated(), etc. has been moved to child classes, due to trouble with "this" value
+     * this problem has been tested, as the original (new Direction).copy() instanceof Vector but not Direction
+     */
+
     /**
-      * @desc minus a vector
-      * @param vector $other -- the vectors to be subtracted from this
-      * @return vector this-other
-    */
-    this.minus = function(other) {
-        var result = this.add(other.negate());
-        return result;
-    };
+     * @desc negate this vector
+     * @return vector -this
+     */
+    negate() {
+        this.x = -this.x;
+        this.y = -this.y;
+        return this;
+    }
     /**
-      * @desc scale this vector
-      * @param float $a -- the scale
-      * @return vector a*this
-    */
-    this.scale = function(a) {
-        var result = new vector(a*this.x, a*this.y);
-        return result;
-    };
+     * @desc add another vectors
+     * @param Vector $other -- the vector to be added
+     * @return vector this+other
+     */
+    add(other) {
+        this.x += other.x;
+        this.y += other.y;
+        return this;
+    }
     /**
-      * @desc copy this vector (by creating a new object)
-      * @return vector this (new instance)
-    */
-    this.copy = function() {
-        var result = new vector(this.x, this.y);
-        return result;
-    };
+     * @desc minus a vector
+     * @param vector $other -- the vectors to be subtracted from this
+     * @return vector this-other
+     */
+    minus(other) {
+        return this.add(other.negated()); // KSM: notice the usage of negated here, not negate
+    }
+    /**
+     * @desc scale this vector
+     * @param float $a -- the scale
+     * @return vector a*this
+     */
+    scale(a) {
+        this.x *= a;
+        this.y *= a;
+        return this;
+    }
+
+    /**
+     * @desc get the length of the vector
+     * @returns {number}
+     */
+    len() {
+        return Math.sqrt(this.x*this.x + this.y*this.y);
+    }
+    /**
+     * @desc making the current vector a unit vector
+     * @return unit vector
+     */
+    unit() {
+        let len = this.len();
+        this.x /= len;
+        this.y /= len;
+        return this;
+    }
+}
+
+class Direction extends Vector {
+    constructor(x, y) {
+        super(x, y);
+    }
+
+    /**
+     * @desc create a copy of the current direction
+     * @returns {Direction}
+     */
+    copy() {
+        return new Direction(this.x, this.y);
+    }
+    /**
+     * @desc operation on copy of the corresponding Direction
+     * @return copies of the original Direction, effect corresponding to those without -ed
+     */
+    negated() {
+        return this.copy().negate();
+    }
+    added(other) {
+        return this.copy().add(other);
+    }
+    minused(other) {
+        return this.copy().minus(other);
+    }
+    scaled(a) {
+        return this.copy().scale(a);
+    }
+    united() {
+        return this.copy.unit();
+    }
+}
+
+class Point extends Vector {
+    constructor(x, y) {
+        super(x, y);
+    }
+
+    /**
+     * @desc create a copy of the current direction
+     * @returns {Direction}
+     */
+    copy() {
+        return new Direction(this.x, this.y);
+    }
+    /**
+     * @desc operation on copy of the corresponding Direction
+     * @return copies of the original Direction, effect corresponding to those without -ed
+     */
+    negated() {
+        return this.copy().negate();
+    }
+    added(other) {
+        return this.copy().add(other);
+    }
+    minused(other) {
+        return this.copy().minus(other);
+    }
+    scaled(a) {
+        return this.copy().scale(a);
+    }
+    united() {
+        return this.copy.unit();
+    }
+}
+
+//TODO: Upgrade RigidBody to ES6 class representation
+class RigidBody {
+    constructor(id, mass, x, y, vx, vy, inertia, rotate, omega) {
+        this.id = id;
+        this.mass = mass;
+        this.position = new Point(x, y);
+        this.forward = new Direction(vx, vy);
+        this.inertia = inertia;
+        this.rotation = rotation;
+        this.angularVelocity = omega;
+    }
 }
 
 /**
@@ -75,9 +173,9 @@ function vector(x, y) {
   * @param float $omega -- the initial angular velocity in radian
   * @note velocity and angular velocity are displacement by frame
 */
-function rigid(id, weight, x, y, vx, vy, inertia, rotate, omega) {
+function rigid(id, mass, x, y, vx, vy, inertia, rotate, omega) {
 	this.id = id;
-	this.weight = weight;
+	this.mass = mass;
 	this.position = new vector(x, y);
 	this.v = new vector(vx, vy);
     this.I = inertia;
@@ -118,3 +216,12 @@ function rigid(id, weight, x, y, vx, vy, inertia, rotate, omega) {
         this.rotate += this.omega;
     };
 }
+
+/**
+ * @desc encapsulation of this module
+ * KSM: moved to the end since ES6 class does not support hoisting
+ */
+module.exports = {
+    RigidBody: rigid,
+    Vector: Vector
+};
