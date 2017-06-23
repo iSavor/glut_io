@@ -6,12 +6,13 @@
 	<script src="Queue.js"></script>
 	<script src="models.js"></script>
 	<script src="socket.io.js"></script>
-	<script src="phaser.js"></script>
+    <script src="phaser.js"></script>
 	<script>
 		//Both are queues of type msg defined in models.js
 		producer = new Queue();
 		consumer = new Queue();
-		players = [];
+		var players = [];
+		var signals = {loadComplete: false};
 
 		producer_handlers = {
 		};
@@ -20,12 +21,15 @@
 				players = new_players;
 				//Performance!!
 				//Brute-force replacing might raise performance issue
-				console.log(players.length);
-			}
+			},
+            "loadComplete": function() {
+                signals.loadComplete = true;
+                console.log("complete");
+            }
 		};
 
 	</script>
-	<script src="client.js"></script>
+    <script src="client.js"></script>
 	<script src="game.js"></script>
 </head>
 <body>

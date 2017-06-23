@@ -19,7 +19,7 @@ var players = [];
 
 io.on('connect', function(socket){
 	for (var i = 0; i < 5; i++) {
-		players.push(new models.rigid_body(i, 0, 0, 0, 0, 0, 0, 0));
+		players.push(new models.RigidBody(i, 0, 0, 0, 0, 0, 0, 0));
 		socket.emit('update', players);
 		console.log('emit');
 	}
@@ -28,4 +28,5 @@ io.on('connect', function(socket){
 		socket.emit('update', players);
 		console.log('emit');
 	}
+	setTimeout(function(){socket.emit("loadComplete");console.log("complete");}, 10000);
 });

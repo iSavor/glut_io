@@ -49,7 +49,7 @@ class Vector {
     }
     /**
      * @desc minus a vector
-     * @param vector $other -- the vectors to be subtracted from this
+     * @param Vector $other -- the vectors to be subtracted from this
      * @return vector this-other
      */
     minus(other) {
@@ -178,8 +178,8 @@ class RigidBody {
 function rigid(id, mass, x, y, vx, vy, inertia, rotate, omega) {
 	this.id = id;
 	this.mass = mass;
-	this.position = new vector(x, y);
-	this.v = new vector(vx, vy);
+	this.position = new Vector(x, y);
+	this.v = new Vector(vx, vy);
     this.I = inertia;
 	this.rotate = rotate;
 	this.omega = omega;
@@ -196,7 +196,7 @@ function rigid(id, mass, x, y, vx, vy, inertia, rotate, omega) {
       * @desc set the angular velocity of this object (instant change)
       * @param float $omega -- the new angular velocity
     */
-    this.set_v = function(omega) {
+    this.set_omega = function(omega) {
         this.omega = omega;
     };
 
