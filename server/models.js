@@ -1,3 +1,5 @@
+"use strict";
+
 /**
   * @desc this module is a repository for all the classes and 
   *       structures that will be used. Note, only the classes 

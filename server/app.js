@@ -1,3 +1,5 @@
+"use strict";
+
 var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
@@ -13,7 +15,7 @@ server.listen('8080', function() {
     console.log('Listening on ' + server.address().port);
 });
 
-players = [];
+var players = [];
 
 io.on('connect', function(socket){
 	for (var i = 0; i < 5; i++) {
