@@ -1,13 +1,14 @@
 var game = new Phaser.Game(1000, 600, Phaser.AUTO, 'glut');
 
 var states = {
-	preload: function() {
+	load: function() {
 	    this.create = function() {
+            game.input.mouse.capture = true;
+
             game.stage.backgroundColor = 0x808080;
             var style = { font: "65px Arial", fill: "#ffffff", align: "center" };
             var text = game.add.text(game.world.centerX, game.world.centerY, "Loading", style);
             text.anchor.setTo(0, 0.5);
-            //game.load.onLoadComplete.add(function(){game.state.start("created");}, this);
             var i = 0;
             var animation = setInterval(function(){
                 i = (i + 1) % 6;
@@ -15,27 +16,42 @@ var states = {
                 if (signals.loadComplete) {
                     console.log("complete");
                     clearInterval(animation);
-                    game.state.start("created");
+                    game.state.start("login");
                 }
             }, 500);
-        }
+        };
 	},
-	created: function() {
+	login: function() {
         this.create = function() {
             game.stage.backgroundColor = 0xff0000;
+            var style = { font: "65px Arial", fill: "#ffffff", align: "center" };
+            var text = game.add.text(game.world.centerX, game.world.centerY, "Log in", style);
+            text.anchor.setTo(0, 0.5);
             setTimeout(function(){game.state.start("play")}, 1000);
         }
 	},
 	play: function() {
         this.create = function() {
             game.stage.backgroundColor = 0xf0ff00;
-            setTimeout(function(){game.state.start("over")}, 1000);
+        };
+        this.render = function() {
+            if (signals.over) {
+                signals.over = false;
+                game.state.start('over');
+            }
         }
 	},
 	over: function() {
         this.create = function() {
             game.stage.backgroundColor = 0x000000;
-            setTimeout(function(){game.state.start("play")}, 1000);
+            var style = { font: "65px Arial", fill: "#ffffff", align: "center" };
+            var text = game.add.text(game.world.centerX, game.world.centerY, "Click to play again", style);
+            text.anchor.setTo(0.5, 0.5);
+        };
+        this.render = function() {
+            if (game.input.activePointer.leftButton.isDown) {
+                game.state.start('play');
+            }
         }
 	}
 }
@@ -44,4 +60,4 @@ for(var key in states) {
 	game.state.add(key, states[key]);
 }
 
-game.state.start('preload');
+game.state.start('load');
