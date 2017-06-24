@@ -39,6 +39,7 @@ var states = {
                 signals.over = false;
                 game.state.start('over');
             }
+            setTimeout(function(){producer.enqueue(new msg('action', 'L'))}, 1000);
         }
 	},
 	over: function() {

@@ -219,11 +219,20 @@ function rigid(id, mass, x, y, vx, vy, inertia, rotate, omega) {
     };
 }
 
+class Player {
+    constructor(id, socket, body) {
+        this.id = id;
+        this.socket = socket;
+        this.body = body;
+    }
+}
+
 /**
  * @desc encapsulation of this module
  * KSM: moved to the end since ES6 class does not support hoisting
  */
 module.exports = {
     RigidBody: rigid,
-    Vector: Vector
+    Vector: Vector,
+    Player: Player
 };

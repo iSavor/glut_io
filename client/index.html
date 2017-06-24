@@ -26,10 +26,14 @@
         }, 10);
 
 		producer_handlers = {
+		    "action": function(key) {
+		        socket.emit('action', key);
+            }
 		};
 		consumer_handlers = {
 			"update": function(new_players) {
 				players = new_players;
+				console.log(players);
 				//Brute-force replacing might raise performance issue
 			},
             "loadComplete": function() {
