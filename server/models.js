@@ -205,16 +205,22 @@ function rigid(id, mass, x, y, vx, vy, inertia, rotate, omega) {
       * @param vector $f, float $tau -- the force and torque to be applied
     */
     this.apply = function(f, tau) {
-        var a = f.scale(1/this.weight);
-        this.v = this.v.add(a);
+        f.scale(1/this.mass);
+        this.v.add(f);
+        this.v.x = Math.min(this.v.x, 5);
+        this.v.y = Math.min(this.v.y, 5);
         var alpha = tau/this.I;
         this.omega += alpha;
+        this.omega = Math.min(this.omega, 10);
     };
     /**
       * @desc move this object by one frame
     */
     this.move = function() {
-        this.position = this.position.add(this.v);
+        if (this.position.x <= 0 || this.position.y <= 0 || this.position.x >= 1000 || this.position.y >= 600) {
+            this.v.negate();
+        }
+        this.position.add(this.v);
         this.rotate += this.omega;
     };
 }

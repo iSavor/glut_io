@@ -16,6 +16,7 @@ server.listen('8080', function() {
 });
 
 var players = [];
+var bodies = [];
 var top_id = 1;
 
 io.on('connect', function(socket){
@@ -23,7 +24,8 @@ io.on('connect', function(socket){
     var this_player = new models.Player(top_id, socket, body);
     players.push(this_player);
     top_id++;
-    setTimeout(function(){socket.emit("loadComplete");console.log("complete");}, 10000);
+    bodies = players.map(function(x){return x.body});
+    setTimeout(function(){socket.emit("loadComplete");console.log("complete");}, 1000);
 
     socket.on('action', function(action){
         if (action === 'L') {
@@ -35,18 +37,25 @@ io.on('connect', function(socket){
         } else if (action == 'D') {
             this_player.body.apply(new models.Vector(0, 1), 0);
         }
-        var client_players = players.map(function(obj){return obj.body});
-        socket.broadcast.emit('update', client_players);
+        socket.broadcast.emit('update', bodies);
     });
 
     socket.on('disconnect', function(){
         var i = players.indexOf(this_player);
         players.splice(i, 1);
-        console.log(players);
+        bodies = players.map(function(x){return x.body});
+        console.log(this_player.id + " leaves game.");
     });
 
-    setTimeout(function(){socket.emit("gameOver");console.log("over");}, 10000);
+    setInterval(render, 20);
+
+    //setTimeout(function(){socket.emit("gameOver");console.log("over");}, 10000);
 });
+
+function render() {
+    physics.run(bodies);
+    io.emit('update', bodies);
+}
 
 function randInt(a, b) {
     var r = Math.random();

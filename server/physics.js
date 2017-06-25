@@ -4,7 +4,13 @@ var models = require('./models');
 
 module.exports = {
 	run: function(objs) {
-		collision(objs, 5, function(a, b) {});
+		collision(objs, 5, function(a, b) {
+			a.v.negate();
+			b.v.negate();
+		});
+		for (var obj of objs) {
+			obj.move();
+		}
 	}
 };
 
