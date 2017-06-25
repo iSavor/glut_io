@@ -25,7 +25,7 @@ io.on('connect', function(socket){
     players.push(this_player);
     top_id++;
     bodies = players.map(function(x){return x.body});
-    setTimeout(function(){socket.emit("loadComplete");console.log("complete");}, 1000);
+    setTimeout(function(){socket.emit("loadComplete");console.log(this_player.id + " joins game.");}, 1000);
 
     socket.on('action', function(action){
         if (action === 'L') {
@@ -45,6 +45,7 @@ io.on('connect', function(socket){
         players.splice(i, 1);
         bodies = players.map(function(x){return x.body});
         console.log(this_player.id + " leaves game.");
+        io.emit('leave', this_player.id);
     });
 
     setInterval(render, 20);

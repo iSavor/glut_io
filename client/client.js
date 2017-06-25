@@ -11,3 +11,7 @@ socket.on('loadComplete', function(){
 socket.on('gameOver', function(){
     consumer.enqueue(new msg('gameOver'));
 });
+
+socket.on('leave', function(data){
+    consumer.enqueue(new msg('leave', data));
+})

@@ -1,19 +1,14 @@
 var game = new Phaser.Game(1000, 600, Phaser.AUTO, 'glut');
 
-var face;
-var texture;
+var sprites = {};
 
 var states = {
 	load: function() {
 	    this.preload = function() {
-	        game.load
             game.load.image('face', 'assets/player.png');
         };
 	    this.create = function() {
             game.input.mouse.capture = true;
-            face = game.make.sprite(0, 0, 'face');
-            texture = game.add.renderTexture(20, 20);
-            game.add.sprite(0, 0, texture);
 
             game.stage.backgroundColor = 0x808080;
             var style = { font: "65px Arial", fill: "#ffffff", align: "center" };
@@ -30,9 +25,6 @@ var states = {
                 }
             }, 500);
         };
-	    this.render = function() {
-	        texture.renderXY(face, 100, 200, true);
-        }
 	},
 	login: function() {
         this.create = function() {
@@ -45,18 +37,33 @@ var states = {
 	},
 	play: function() {
         this.create = function() {
-            game.stage.backgroundColor = 0xf0ff00;
+            game.stage.backgroundColor = 0x808080;
         };
         this.render = function() {
             for (var player of players) {
-                console.log(player.position.x, player.position.y);
-                texture.renderXY(face, player.position.x, player.position.y, true);
+                if (player.id in sprites) {
+                    sprites[player.id].x = player.position.x;
+                    sprites[player.id].y = player.position.y;
+
+                } else {
+                    sprites[player.id] = game.add.sprite(player.position.x, player.position.y, 'face');
+                }
             }
             if (signals.over) {
                 signals.over = false;
                 game.state.start('over');
             }
-            setTimeout(function(){producer.enqueue(new msg('action', 'L'))}, 1000);
+            if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
+                producer.enqueue(new msg('action', 'L'));
+            } else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
+                producer.enqueue(new msg('action', 'R'));
+            }
+            if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+                producer.enqueue(new msg('action', 'U'));
+            }
+            else if (game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
+                producer.enqueue(new msg('action', 'D'));
+            }
         }
 	},
 	over: function() {

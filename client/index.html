@@ -42,6 +42,10 @@
             "gameOver": function() {
 			    signals.over = true;
 			    console.log("over");
+            },
+            "leave": function(id) {
+			    sprites[id].destroy();
+			    delete sprites[id];
             }
 		};
 
