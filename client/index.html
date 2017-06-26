@@ -35,8 +35,9 @@
 				players = new_players;
 				//Brute-force replacing might raise performance issue
 			},
-            "loadComplete": function() {
+            "loadComplete": function(id) {
                 signals.loadComplete = true;
+                my_id = id;
                 console.log("complete");
             },
             "gameOver": function() {

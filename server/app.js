@@ -25,7 +25,7 @@ io.on('connect', function(socket){
     players.push(this_player);
     top_id++;
     bodies = players.map(function(x){return x.body});
-    setTimeout(function(){socket.emit("loadComplete");console.log(this_player.id + " joins game.");}, 1000);
+    setTimeout(function(){socket.emit("loadComplete", this_player.id);console.log(this_player.id + " joins game.");}, 1000);
 
     socket.on('action', function(action){
         if (action === 'L') {

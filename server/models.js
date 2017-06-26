@@ -207,18 +207,23 @@ function rigid(id, mass, x, y, vx, vy, inertia, rotate, omega) {
     this.apply = function(f, tau) {
         f.scale(1/this.mass);
         this.v.add(f);
-        this.v.x = Math.min(this.v.x, 5);
-        this.v.y = Math.min(this.v.y, 5);
+        if (this.v.x > 0) this.v.x = Math.min(this.v.x, 5);
+        else this.v.x = Math.max(this.v.x, -5);
+        if (this.v.y > 0) this.v.y = Math.min(this.v.y, 5);
+        else this.v.y = Math.max(this.v.y, -5);
         var alpha = tau/this.I;
         this.omega += alpha;
-        this.omega = Math.min(this.omega, 10);
+        if (this.omega > 0) this.omega = Math.min(this.omega, 10);
+        else this.omega = Math.max(this.omega, -10);
     };
     /**
       * @desc move this object by one frame
     */
     this.move = function() {
-        if (this.position.x <= 0 || this.position.y <= 0 || this.position.x >= 1000 || this.position.y >= 600) {
-            this.v.negate();
+        if (this.position.x <= 0 || this.position.x >= 2936) {
+            this.v.x = -this.v.x;
+        } else if ( this.position.y <= 0 ||  this.position.y >= 2936) {
+            this.v.y = -this.v.y;
         }
         this.position.add(this.v);
         this.rotate += this.omega;

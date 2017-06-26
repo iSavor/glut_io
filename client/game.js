@@ -1,19 +1,25 @@
 var game = new Phaser.Game(1000, 600, Phaser.AUTO, 'glut');
 
 var sprites = {};
+var my_id = -1;
+var camera_set = false;
 
 var states = {
 	load: function() {
 	    this.preload = function() {
             game.load.image('face', 'assets/player.png');
+            game.load.image('background', 'assets/tiles.jpg');
         };
 	    this.create = function() {
             game.input.mouse.capture = true;
+            game.world.setBounds(0, 0, 3000, 3000);
 
             game.stage.backgroundColor = 0x808080;
             var style = { font: "65px Arial", fill: "#ffffff", align: "center" };
             var text = game.add.text(game.world.centerX, game.world.centerY, "Loading", style);
             text.anchor.setTo(0, 0.5);
+            text.fixedToCamera = true;
+            text.cameraOffset.setTo(400, 300);
             var i = 0;
             var animation = setInterval(function(){
                 i = (i + 1) % 6;
@@ -32,12 +38,15 @@ var states = {
             var style = { font: "65px Arial", fill: "#ffffff", align: "center" };
             var text = game.add.text(game.world.centerX, game.world.centerY, "Log in", style);
             text.anchor.setTo(0, 0.5);
+            text.fixedToCamera = true;
+            text.cameraOffset.setTo(400, 300);
             setTimeout(function(){game.state.start("play")}, 1000);
         }
 	},
 	play: function() {
         this.create = function() {
-            game.stage.backgroundColor = 0x808080;
+            //game.stage.backgroundColor = 0x808080;
+            game.add.tileSprite(0, 0, 3000, 3000, 'background');
         };
         this.render = function() {
             for (var player of players) {
@@ -48,6 +57,10 @@ var states = {
                 } else {
                     sprites[player.id] = game.add.sprite(player.position.x, player.position.y, 'face');
                 }
+            }
+            if (! camera_set) {
+                game.camera.follow(sprites[my_id], Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
+                camera_set = true;
             }
             if (signals.over) {
                 signals.over = false;
@@ -73,7 +86,7 @@ var states = {
             var text = game.add.text(game.world.centerX, game.world.centerY, "Click to play again", style);
             text.anchor.setTo(0.5, 0.5);
         };
-        this.render = function() {
+        this.update = function() {
             if (game.input.activePointer.leftButton.isDown) {
                 game.state.start('play');
             }

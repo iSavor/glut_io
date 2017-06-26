@@ -4,8 +4,8 @@ socket.on('update', function(data){
 	consumer.enqueue(new msg('update', data));
 });
 
-socket.on('loadComplete', function(){
-    consumer.enqueue(new msg('loadComplete'));
+socket.on('loadComplete', function(data){
+    consumer.enqueue(new msg('loadComplete', data));
 });
 
 socket.on('gameOver', function(){
