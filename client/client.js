@@ -1,17 +1,23 @@
 var socket = io.connect('http://localhost:8080');
 
 socket.on('update', function(data){
-	consumer.enqueue(new msg('update', data));
+    players = data;
+	//consumer.enqueue(new msg('update', data));
 });
 
 socket.on('loadComplete', function(data){
-    consumer.enqueue(new msg('loadComplete', data));
+    signals.loadComplete = true;
+    my_id = data;
+    //consumer.enqueue(new msg('loadComplete', data));
 });
 
 socket.on('gameOver', function(){
-    consumer.enqueue(new msg('gameOver'));
+    signals.over = true;
+    //consumer.enqueue(new msg('gameOver'));
 });
 
 socket.on('leave', function(data){
-    consumer.enqueue(new msg('leave', data));
+    sprites[data].destroy();
+    delete sprites[data];
+    //consumer.enqueue(new msg('leave', data));
 })

@@ -2,6 +2,7 @@ var game = new Phaser.Game(1000, 600, Phaser.AUTO, 'glut');
 
 var sprites = {};
 var my_id = -1;
+var my_player;
 var camera_set = false;
 
 var states = {
@@ -47,15 +48,29 @@ var states = {
         this.create = function() {
             //game.stage.backgroundColor = 0x808080;
             game.add.tileSprite(0, 0, 3000, 3000, 'background');
+            setInterval(function(){
+                var x_diff = game.input.worldX - sprites[my_id].x;
+                var y_diff = game.input.worldY - sprites[my_id].y;
+                var angle = Math.atan(y_diff/x_diff);
+                if (angle < 0) angle += Math.PI;
+                if (y_diff < 0) {
+                    angle += Math.PI;
+                }
+                game.debug.text(angle.toString()+"\n"+x_diff.toString()+"\n"+y_diff.toString(), 100, 100);
+                //producer.enqueue(new msg('turnTo', angle));
+                socket.emit('turnTo', angle);
+            }, 100);
         };
         this.render = function() {
             for (var player of players) {
                 if (player.id in sprites) {
                     sprites[player.id].x = player.position.x;
                     sprites[player.id].y = player.position.y;
+                    sprites[player.id].angle = player.angle/Math.PI*180;
 
                 } else {
                     sprites[player.id] = game.add.sprite(player.position.x, player.position.y, 'face');
+                    sprites[player.id].anchor.setTo(0.5, 0.5);
                 }
             }
             if (! camera_set) {
@@ -66,6 +81,7 @@ var states = {
                 signals.over = false;
                 game.state.start('over');
             }
+            /*
             if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
                 producer.enqueue(new msg('action', 'L'));
             } else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
@@ -76,7 +92,7 @@ var states = {
             }
             else if (game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
                 producer.enqueue(new msg('action', 'D'));
-            }
+            }*/
         }
 	},
 	over: function() {

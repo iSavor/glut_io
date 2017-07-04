@@ -151,84 +151,41 @@ class Point extends Vector {
     }
 }
 
-//TODO: Upgrade RigidBody to ES6 class representation
 class RigidBody {
-    constructor(id, mass, x, y, vx, vy, inertia, rotate, omega) {
+    constructor(id, mass, x, y, v, angle, radius) {
         this.id = id;
         this.mass = mass;
+        this.v = v;
         this.position = new Point(x, y);
-        this.forward = new Direction(vx, vy);
-        this.inertia = inertia;
-        this.rotation = rotation;
-        this.angularVelocity = omega;
+        this.angle = angle;
+        this.radius = radius;
+    }
+
+    set_v(v) {
+        this.v = v;
+    }
+
+    set_angle(angle) {
+        this.angle = angle;
+    }
+
+    move() {
+        this.position.x += Math.cos(this.angle)*this.v;
+        this.position.y += Math.sin(this.angle)*this.v;
+        //TODO: 2900 should be replaced
+        if (this.position.x <= 0) {
+            this.position.x = 0;
+        } else if (this.position.x >= 2900) {
+            this.position.x = 2900;
+        }
+        if (this.position.y <= 0) {
+            this.position.y = 0;
+        } else if (this.position.y >= 2900) {
+            this.position.y = 2900;
+        }
     }
 }
 
-/**
-  * @desc a rigid body class
-  * @param int $id -- the unique identifier
-  * @param float $weight -- the weight
-  * @param float $x, float $y -- the initial coordinates
-  * @param float $vx, float $vy -- the initial velocity
-  * @param float $inertia -- the angular inertia
-  * @param float $rotate -- the initial rotation in radian
-  * @param float $omega -- the initial angular velocity in radian
-  * @note velocity and angular velocity are displacement by frame
-*/
-function rigid(id, mass, x, y, vx, vy, inertia, rotate, omega) {
-	this.id = id;
-	this.mass = mass;
-	this.position = new Vector(x, y);
-	this.v = new Vector(vx, vy);
-    this.I = inertia;
-	this.rotate = rotate;
-	this.omega = omega;
-
-    /**
-      * @desc set the velocity of this object (instant change)
-      * @param vector $v -- the new velocity
-    */
-    this.set_v = function(v) {
-        this.v = v;
-    };
-
-    /**
-      * @desc set the angular velocity of this object (instant change)
-      * @param float $omega -- the new angular velocity
-    */
-    this.set_omega = function(omega) {
-        this.omega = omega;
-    };
-
-    /**
-      * @desc apply force and torque on this object
-      * @param vector $f, float $tau -- the force and torque to be applied
-    */
-    this.apply = function(f, tau) {
-        f.scale(1/this.mass);
-        this.v.add(f);
-        if (this.v.x > 0) this.v.x = Math.min(this.v.x, 5);
-        else this.v.x = Math.max(this.v.x, -5);
-        if (this.v.y > 0) this.v.y = Math.min(this.v.y, 5);
-        else this.v.y = Math.max(this.v.y, -5);
-        var alpha = tau/this.I;
-        this.omega += alpha;
-        if (this.omega > 0) this.omega = Math.min(this.omega, 10);
-        else this.omega = Math.max(this.omega, -10);
-    };
-    /**
-      * @desc move this object by one frame
-    */
-    this.move = function() {
-        if (this.position.x <= 0 || this.position.x >= 2936) {
-            this.v.x = -this.v.x;
-        } else if ( this.position.y <= 0 ||  this.position.y >= 2936) {
-            this.v.y = -this.v.y;
-        }
-        this.position.add(this.v);
-        this.rotate += this.omega;
-    };
-}
 
 class Player {
     constructor(id, socket, body) {
@@ -243,7 +200,7 @@ class Player {
  * KSM: moved to the end since ES6 class does not support hoisting
  */
 module.exports = {
-    RigidBody: rigid,
+    RigidBody: RigidBody,
     Vector: Vector,
     Player: Player
 };

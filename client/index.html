@@ -9,11 +9,12 @@
     <script src="phaser.js"></script>
 	<script>
 		//Both are queues of type msg defined in models.js
-		producer = new Queue();
-		consumer = new Queue();
+		//producer = new Queue();
+		//consumer = new Queue();
 		var players = [];
 		var signals = {loadComplete: false, over: false};
 
+		/*
 		setInterval(function(){
 		    if (!consumer.isEmpty()) {
                 var item = consumer.dequeue();
@@ -23,11 +24,15 @@
                 var item = producer.dequeue();
                 producer_handlers[item.key](item.data);
             }
-        }, 10);
+        }, 10);*/
 
+        /*
 		producer_handlers = {
 		    "action": function(key) {
 		        socket.emit('action', key);
+            },
+            "turnTo": function(angle) {
+		        socket.emit('turnTo', angle);
             }
 		};
 		consumer_handlers = {
@@ -48,7 +53,7 @@
 			    sprites[id].destroy();
 			    delete sprites[id];
             }
-		};
+		};*/
 
 	</script>
     <script src="client.js"></script>

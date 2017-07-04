@@ -20,7 +20,7 @@ var bodies = [];
 var top_id = 1;
 
 io.on('connect', function(socket){
-    var body = new models.RigidBody(top_id, 1, randInt(100, 500), randInt(100, 500), 0, 0, 1, 0, 0);
+    var body = new models.RigidBody(top_id, 1, randInt(100, 500), randInt(100, 500), 5, 0, 64);
     var this_player = new models.Player(top_id, socket, body);
     players.push(this_player);
     top_id++;
@@ -29,15 +29,20 @@ io.on('connect', function(socket){
 
     socket.on('action', function(action){
         if (action === 'L') {
-            this_player.body.apply(new models.Vector(-1, 0), 0);
+            this_player.body.set_angle(Math.PI);
         } else if (action == 'R') {
-            this_player.body.apply(new models.Vector(1, 0), 0);
+            this_player.body.set_angle(0);
         } else if (action == 'U') {
-            this_player.body.apply(new models.Vector(0, -1), 0);
+            this_player.body.set_angle(Math.PI*3/2);
         } else if (action == 'D') {
-            this_player.body.apply(new models.Vector(0, 1), 0);
+            this_player.body.set_angle(Math.PI/2);
         }
         socket.broadcast.emit('update', bodies);
+    });
+
+    socket.on('turnTo', function(angle){
+        this_player.body.angle = angle;
+        //console.log("turn to "+angle.toString());
     });
 
     socket.on('disconnect', function(){

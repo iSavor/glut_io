@@ -4,9 +4,9 @@ var models = require('./models');
 
 module.exports = {
 	run: function(objs) {
-		collision(objs, 128, function(a, b) {
-			a.v.negate();
-			b.v.negate();
+		collision(objs, function(a, b) {
+		    a.angle = (a.angle+Math.PI);
+            b.angle = (b.angle+Math.PI);
 		});
 		for (var obj of objs) {
 			obj.move();
@@ -32,11 +32,11 @@ function distance(a, b) {
   * @param function(a, b) $process -- the function to be applied if two bodies collide
   * @return float distance between a and b
 */
-function collision(objs, d, process) {
+function collision(objs, process) {
 	var length = objs.length;
 	for (var i = 0; i < length; i++) {
 		for (var j = i+1; j < length; j++) {
-			if (distance(objs[i].position, objs[j].position) <= d) {
+			if (distance(objs[i].position, objs[j].position) <= objs[i].radius+objs[j].radius) {
 				process(objs[i], objs[j]);
 			}
 		}

@@ -3,4 +3,3 @@ function msg(key, data) {
 	this.data = data;
 }
 
-
