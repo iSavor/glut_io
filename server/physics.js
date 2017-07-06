@@ -5,11 +5,16 @@ var models = require('./models');
 module.exports = {
 	run: function(objs) {
 		collision(objs, function(a, b) {
-		    a.angle = (a.angle+Math.PI);
-            b.angle = (b.angle+Math.PI);
+		    a.rebouncing = 5;
+		    b.rebouncing = 5;
 		});
 		for (var obj of objs) {
-			obj.move();
+		    if (obj.rebouncing <= 0) {
+                obj.move();
+            } else {
+		        obj.unmove();
+		        obj.rebouncing -= 1;
+            }
 		}
 	}
 };

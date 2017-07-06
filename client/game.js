@@ -4,6 +4,7 @@ var sprites = {};
 var my_id = -1;
 var my_player;
 var camera_set = false;
+var pointerOver = false;
 
 var states = {
 	load: function() {
@@ -56,7 +57,7 @@ var states = {
                 if (y_diff < 0) {
                     angle += Math.PI;
                 }
-                game.debug.text(angle.toString()+"\n"+x_diff.toString()+"\n"+y_diff.toString(), 100, 100);
+                //game.debug.text(angle.toString()+"\n"+x_diff.toString()+"\n"+y_diff.toString(), 100, 100);
                 //producer.enqueue(new msg('turnTo', angle));
                 socket.emit('turnTo', angle);
             }, 100);
@@ -71,28 +72,26 @@ var states = {
                 } else {
                     sprites[player.id] = game.add.sprite(player.position.x, player.position.y, 'face');
                     sprites[player.id].anchor.setTo(0.5, 0.5);
+                    sprites[player.id].inputEnabled = true;
                 }
             }
             if (! camera_set) {
-                game.camera.follow(sprites[my_id], Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
+                my_player = sprites[my_id];
+                game.camera.follow(my_player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
                 camera_set = true;
             }
             if (signals.over) {
                 signals.over = false;
                 game.state.start('over');
             }
-            /*
-            if (game.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-                producer.enqueue(new msg('action', 'L'));
-            } else if (game.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-                producer.enqueue(new msg('action', 'R'));
+            game.debug.text(my_player.input.pointerOver().toString(), 100, 100);
+            if (my_player.input.pointerOver() && !pointerOver) {
+                pointerOver = true;
+                socket.emit('stop');
+            } else if (!my_player.input.pointerOver() && pointerOver) {
+                pointerOver = false;
+                socket.emit('start');
             }
-            if (game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-                producer.enqueue(new msg('action', 'U'));
-            }
-            else if (game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
-                producer.enqueue(new msg('action', 'D'));
-            }*/
         }
 	},
 	over: function() {

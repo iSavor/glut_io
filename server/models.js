@@ -159,6 +159,7 @@ class RigidBody {
         this.position = new Point(x, y);
         this.angle = angle;
         this.radius = radius;
+        this.rebouncing = 0;
     }
 
     set_v(v) {
@@ -172,6 +173,22 @@ class RigidBody {
     move() {
         this.position.x += Math.cos(this.angle)*this.v;
         this.position.y += Math.sin(this.angle)*this.v;
+        //TODO: 2900 should be replaced
+        if (this.position.x <= 0) {
+            this.position.x = 0;
+        } else if (this.position.x >= 2900) {
+            this.position.x = 2900;
+        }
+        if (this.position.y <= 0) {
+            this.position.y = 0;
+        } else if (this.position.y >= 2900) {
+            this.position.y = 2900;
+        }
+    }
+
+    unmove() {
+        this.position.x -= Math.cos(this.angle)*this.v;
+        this.position.y -= Math.sin(this.angle)*this.v;
         //TODO: 2900 should be replaced
         if (this.position.x <= 0) {
             this.position.x = 0;

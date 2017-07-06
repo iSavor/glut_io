@@ -19,8 +19,12 @@ var players = [];
 var bodies = [];
 var top_id = 1;
 
+var constants = {
+    defaultSpeed: 5
+};
+
 io.on('connect', function(socket){
-    var body = new models.RigidBody(top_id, 1, randInt(100, 500), randInt(100, 500), 5, 0, 64);
+    var body = new models.RigidBody(top_id, 1, randInt(100, 500), randInt(100, 500), constants.defaultSpeed, 0, 64);
     var this_player = new models.Player(top_id, socket, body);
     players.push(this_player);
     top_id++;
@@ -51,6 +55,14 @@ io.on('connect', function(socket){
         bodies = players.map(function(x){return x.body});
         console.log(this_player.id + " leaves game.");
         io.emit('leave', this_player.id);
+    });
+
+    socket.on('stop', function(){
+        this_player.body.v = 0;
+    });
+
+    socket.on('start', function(){
+        this_player.body.v = constants.defaultSpeed;
     });
 
     setInterval(render, 20);
