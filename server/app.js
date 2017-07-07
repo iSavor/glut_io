@@ -23,6 +23,8 @@ var constants = {
     defaultSpeed: 5
 };
 
+setInterval(render, 20);
+
 io.on('connect', function(socket){
     var body = new models.RigidBody(top_id, 1, randInt(100, 500), randInt(100, 500), constants.defaultSpeed, 0, 64);
     var this_player = new models.Player(top_id, socket, body);
@@ -64,8 +66,6 @@ io.on('connect', function(socket){
     socket.on('start', function(){
         this_player.body.v = constants.defaultSpeed;
     });
-
-    setInterval(render, 20);
 
     //setTimeout(function(){socket.emit("gameOver");console.log("over");}, 10000);
 });
