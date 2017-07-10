@@ -17,16 +17,29 @@ server.listen('8080', function() {
 
 var players = [];
 var bodies = [];
+var food = [];
 var top_id = 1;
+var top_food = 1;
 
 var constants = {
-    defaultSpeed: 5
+    defaultSpeed: 5,
+    defaultRadius: 64,
+    radiusIncr: 4,
+    renderPeriod: 20,
+    supplyPeriod: 20000,
+    maxFood: 100,
+    maxHeight: 3000,
+    maxWidth: 3000,
+    foodSize: 8,
+    foodSpeed: 3
 };
 
-setInterval(render, 20);
+setInterval(render, constants.renderPeriod);
+supplyFood();
+setInterval(supplyFood, constants.supplyPeriod);
 
 io.on('connect', function(socket){
-    var body = new models.RigidBody(top_id, 1, randInt(100, 500), randInt(100, 500), constants.defaultSpeed, 0, 64);
+    var body = new models.RigidBody(top_id, 1, randInt(100, 500), randInt(100, 500), constants.defaultSpeed, 0, constants.defaultRadius);
     var this_player = new models.Player(top_id, socket, body);
     players.push(this_player);
     top_id++;
@@ -72,10 +85,23 @@ io.on('connect', function(socket){
 
 function render() {
     physics.run(bodies);
-    io.emit('update', bodies);
-}
+    physics.run(food);
+    io.emit('update', {player: bodies, food: food});
+};
+
+function supplyFood() {
+    var toSupply = constants.maxFood - food.length;
+    for (var i = 0; i < toSupply; i++) {
+        food.push(new models.RigidBody(top_food, 1, randInt(0, constants.maxWidth), randInt(0, constants.maxHeight),constants.foodSpeed, randAngle(), constants.foodSize));
+        top_food++;
+    }
+};
 
 function randInt(a, b) {
     var r = Math.random();
-    return Math.floor(r*(b-a+1)+a);
+    return Math.floor(r*(b-a)+a);
 };
+
+function randAngle() {
+    return Math.random()*Math.PI*2;
+}

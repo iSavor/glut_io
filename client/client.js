@@ -1,7 +1,9 @@
 var socket = io.connect('http://localhost:8080');
 
 socket.on('update', function(data){
-    players = data;
+    players = data.player;
+    food = data.food;
+    //console.log(food);
 	//consumer.enqueue(new msg('update', data));
 });
 

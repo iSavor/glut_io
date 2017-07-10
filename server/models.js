@@ -162,10 +162,6 @@ class RigidBody {
         this.rebouncing = 0;
     }
 
-    set_v(v) {
-        this.v = v;
-    }
-
     set_angle(angle) {
         this.angle = angle;
     }
@@ -192,13 +188,13 @@ class RigidBody {
         //TODO: 2900 should be replaced
         if (this.position.x <= 0) {
             this.position.x = 0;
-        } else if (this.position.x >= 2900) {
-            this.position.x = 2900;
+        } else if (this.position.x >= 3000 - this.radius) {
+            this.position.x = 3000 - this.radius;
         }
         if (this.position.y <= 0) {
             this.position.y = 0;
-        } else if (this.position.y >= 2900) {
-            this.position.y = 2900;
+        } else if (this.position.y >= 3000 - this.radius) {
+            this.position.y = 3000 - this.radius;
         }
     }
 }

@@ -1,8 +1,9 @@
 var game = new Phaser.Game(1000, 600, Phaser.AUTO, 'glut');
 
 var sprites = {};
+var foodSprites = {};
 var my_id = -1;
-var my_player;
+var my_player = null;
 var camera_set = false;
 var pointerOver = false;
 
@@ -11,6 +12,7 @@ var states = {
 	    this.preload = function() {
             game.load.image('face', 'assets/player.png');
             game.load.image('background', 'assets/tiles.jpg');
+            game.load.image('food', 'assets/food.png');
         };
 	    this.create = function() {
             game.input.mouse.capture = true;
@@ -71,8 +73,24 @@ var states = {
 
                 } else {
                     sprites[player.id] = game.add.sprite(player.position.x, player.position.y, 'face');
+                    sprites[player.id].height = player.radius;
+                    sprites[player.id].width = player.radius;
                     sprites[player.id].anchor.setTo(0.5, 0.5);
                     sprites[player.id].inputEnabled = true;
+                }
+            }
+            for (var item of food) {
+                if (item.id in foodSprites) {
+                    foodSprites[item.id].x = item.position.x;
+                    foodSprites[item.id].y = item.position.y;
+                    foodSprites[item.id].angle = item.angle/Math.PI*180;
+
+                } else {
+                    console.log("food "+item.id.toString()+" added");
+                    foodSprites[item.id] = game.add.sprite(item.position.x, item.position.y, 'food');
+                    foodSprites[item.id].height = item.radius;
+                    foodSprites[item.id].width = item.radius;
+                    foodSprites[item.id].anchor.setTo(0.5, 0.5);
                 }
             }
             if (! camera_set) {
@@ -84,8 +102,7 @@ var states = {
                 signals.over = false;
                 game.state.start('over');
             }
-            game.debug.text(my_player.input.pointerOver().toString(), 100, 100);
-            if (my_player.input.pointerOver() && !pointerOver) {
+            if (my_player.input && my_player.input.pointerOver() && !pointerOver) {
                 pointerOver = true;
                 socket.emit('stop');
             } else if (!my_player.input.pointerOver() && pointerOver) {

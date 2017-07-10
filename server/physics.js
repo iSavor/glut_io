@@ -5,8 +5,7 @@ var models = require('./models');
 module.exports = {
 	run: function(objs) {
 		collision(objs, function(a, b) {
-		    a.rebouncing = 5;
-		    b.rebouncing = 5;
+			//Do Nothing
 		});
 		for (var obj of objs) {
 		    if (obj.rebouncing <= 0) {
