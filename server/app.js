@@ -23,7 +23,7 @@ var top_food = 1;
 
 var constants = {
     defaultSpeed: 5,
-    defaultRadius: 64,
+    defaultRadius: 68,
     radiusIncr: 4,
     renderPeriod: 20,
     supplyPeriod: 20000,
@@ -31,7 +31,8 @@ var constants = {
     maxHeight: 3000,
     maxWidth: 3000,
     foodSize: 8,
-    foodSpeed: 3
+    foodSpeed: 3,
+    angleRate: 3000
 };
 
 setInterval(render, constants.renderPeriod);
@@ -84,8 +85,8 @@ io.on('connect', function(socket){
 });
 
 function render() {
-    physics.run(bodies);
-    physics.run(food);
+    physics.run(bodies, true, false);
+    physics.run(food, false, true);
     io.emit('update', {player: bodies, food: food});
 };
 

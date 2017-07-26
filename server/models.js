@@ -166,20 +166,32 @@ class RigidBody {
         this.angle = angle;
     }
 
+    accelerate() {
+        if (this.v < 5) {
+            this.v += 0.1;
+        }
+    }
+
     move() {
         this.position.x += Math.cos(this.angle)*this.v;
         this.position.y += Math.sin(this.angle)*this.v;
+        var touched = false;
         //TODO: 2900 should be replaced
         if (this.position.x <= 0) {
             this.position.x = 0;
+            touched = true;
         } else if (this.position.x >= 2900) {
             this.position.x = 2900;
+            touched = true;
         }
         if (this.position.y <= 0) {
             this.position.y = 0;
+            touched = true;
         } else if (this.position.y >= 2900) {
             this.position.y = 2900;
+            touched = true;
         }
+        return touched;
     }
 
     unmove() {

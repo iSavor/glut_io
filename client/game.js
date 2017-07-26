@@ -73,8 +73,8 @@ var states = {
 
                 } else {
                     sprites[player.id] = game.add.sprite(player.position.x, player.position.y, 'face');
-                    sprites[player.id].height = player.radius;
-                    sprites[player.id].width = player.radius;
+                    sprites[player.id].height = player.radius*2;
+                    sprites[player.id].width = player.radius*2;
                     sprites[player.id].anchor.setTo(0.5, 0.5);
                     sprites[player.id].inputEnabled = true;
                 }
@@ -88,8 +88,8 @@ var states = {
                 } else {
                     console.log("food "+item.id.toString()+" added");
                     foodSprites[item.id] = game.add.sprite(item.position.x, item.position.y, 'food');
-                    foodSprites[item.id].height = item.radius;
-                    foodSprites[item.id].width = item.radius;
+                    foodSprites[item.id].height = item.radius*2;
+                    foodSprites[item.id].width = item.radius*2;
                     foodSprites[item.id].anchor.setTo(0.5, 0.5);
                 }
             }

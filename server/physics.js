@@ -2,19 +2,30 @@
 
 var models = require('./models');
 
+function randAngle() {
+    return Math.random()*Math.PI*2;
+}
+
 module.exports = {
-	run: function(objs) {
-		collision(objs, function(a, b) {
-			//Do Nothing
-		});
+	run: function(objs, collide, noStuck) {
+		if (collide) {
+		    collision(objs, function(a, b) {
+                if (a.v > 0) {
+                    a.v = -a.v;
+                }
+                if (b.v > 0) {
+                    b.v = -b.v;
+                }
+            });
+        }
 		for (var obj of objs) {
-		    if (obj.rebouncing <= 0) {
-                obj.move();
-            } else {
-		        obj.unmove();
-		        obj.rebouncing -= 1;
+		    obj.accelerate();
+		    if (obj.move()) {
+		        if (noStuck) {
+		            obj.angle = randAngle();
+                }
             }
-		}
+        }
 	}
 };
 
@@ -40,7 +51,7 @@ function collision(objs, process) {
 	var length = objs.length;
 	for (var i = 0; i < length; i++) {
 		for (var j = i+1; j < length; j++) {
-			if (distance(objs[i].position, objs[j].position) <= objs[i].radius+objs[j].radius) {
+			if (distance(objs[i].position, objs[j].position)*2 <= objs[i].radius+objs[j].radius) {
 				process(objs[i], objs[j]);
 			}
 		}
