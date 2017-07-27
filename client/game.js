@@ -86,7 +86,6 @@ var states = {
                     foodSprites[item.id].angle = item.angle/Math.PI*180;
 
                 } else {
-                    console.log("food "+item.id.toString()+" added");
                     foodSprites[item.id] = game.add.sprite(item.position.x, item.position.y, 'food');
                     foodSprites[item.id].height = item.radius*2;
                     foodSprites[item.id].width = item.radius*2;
