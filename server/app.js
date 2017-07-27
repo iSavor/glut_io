@@ -74,11 +74,30 @@ io.on('connect', function(socket){
     });
 
     socket.on('stop', function(){
-        this_player.body.v = 0;
+        this_player.body.stopping = true;
     });
 
     socket.on('start', function(){
-        this_player.body.v = constants.defaultSpeed;
+        this_player.body.stopping = false;
+    });
+
+    var counter = 0;
+    socket.on('catch', function(){
+        if (counter != 0)
+            return;
+        var goCatch = setInterval(function(){
+            if (counter >= 4*constants.defaultRadius) {
+                counter = 0;
+                clearInterval(goCatch);
+            } else {
+                counter += 1;
+                if (counter > 2*constants.defaultRadius) {
+                    this_player.body.distance = 4*constants.defaultRadius - counter;
+                } else {
+                    this_player.body.distance = counter;
+                }
+            }
+        }, constants.renderPeriod/2);
     });
 
     //setTimeout(function(){socket.emit("gameOver");console.log("over");}, 10000);

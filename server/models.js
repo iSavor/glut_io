@@ -159,7 +159,8 @@ class RigidBody {
         this.position = new Point(x, y);
         this.angle = angle;
         this.radius = radius;
-        this.rebouncing = 0;
+        this.stopping = false;
+        this.distance = 0;
     }
 
     set_angle(angle) {
@@ -173,6 +174,8 @@ class RigidBody {
     }
 
     move() {
+        if (this.stopping)
+            return;
         this.position.x += Math.cos(this.angle)*this.v;
         this.position.y += Math.sin(this.angle)*this.v;
         var touched = false;

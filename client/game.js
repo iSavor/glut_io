@@ -1,16 +1,17 @@
 var game = new Phaser.Game(1000, 600, Phaser.AUTO, 'glut');
 
 var sprites = {};
+var teeth = {};
 var foodSprites = {};
 var my_id = -1;
 var my_player = null;
 var camera_set = false;
-var pointerOver = false;
 
 var states = {
 	load: function() {
 	    this.preload = function() {
             game.load.image('face', 'assets/player.png');
+            game.load.image('teeth', 'assets/teeth.png');
             game.load.image('background', 'assets/tiles.jpg');
             game.load.image('food', 'assets/food.png');
         };
@@ -63,6 +64,9 @@ var states = {
                 //producer.enqueue(new msg('turnTo', angle));
                 socket.emit('turnTo', angle);
             }, 100);
+            game.input.onDown.add(function(){
+                socket.emit('catch');
+            }, this);
         };
         this.render = function() {
             for (var player of players) {
@@ -70,6 +74,10 @@ var states = {
                     sprites[player.id].x = player.position.x;
                     sprites[player.id].y = player.position.y;
                     sprites[player.id].angle = player.angle/Math.PI*180;
+                    console.log(player.radius, player.distance);
+                    teeth[player.id].x = player.position.x + Math.cos(player.angle)*(player.radius+player.distance);
+                    teeth[player.id].y = player.position.y + Math.sin(player.angle)*(player.radius+player.distance);
+                    teeth[player.id].angle = player.angle/Math.PI*180;
 
                 } else {
                     sprites[player.id] = game.add.sprite(player.position.x, player.position.y, 'face');
@@ -77,6 +85,10 @@ var states = {
                     sprites[player.id].width = player.radius*2;
                     sprites[player.id].anchor.setTo(0.5, 0.5);
                     sprites[player.id].inputEnabled = true;
+                    teeth[player.id] = game.add.sprite(player.position.x, player.position.y, 'teeth');
+                    teeth[player.id].height = player.radius*2;
+                    teeth[player.id].width = player.radius/2;
+                    teeth[player.id].anchor.setTo(0.5, 0.5);
                 }
             }
             for (var item of food) {
@@ -94,6 +106,12 @@ var states = {
             }
             if (! camera_set) {
                 my_player = sprites[my_id];
+                my_player.events.onInputOver.add(function(){
+                    socket.emit('stop');
+                }, this);
+                my_player.events.onInputOut.add(function(){
+                    socket.emit('start');
+                }, this);
                 game.camera.follow(my_player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
                 camera_set = true;
             }
@@ -101,13 +119,14 @@ var states = {
                 signals.over = false;
                 game.state.start('over');
             }
-            if (my_player.input && my_player.input.pointerOver() && !pointerOver) {
+            /*
+            if (my_player.input.pointerOver() && !pointerOver) {
                 pointerOver = true;
                 socket.emit('stop');
             } else if (!my_player.input.pointerOver() && pointerOver) {
                 pointerOver = false;
                 socket.emit('start');
-            }
+            }*/
         }
 	},
 	over: function() {
