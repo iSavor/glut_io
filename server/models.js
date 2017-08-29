@@ -114,7 +114,7 @@ class Direction extends Vector {
         return this.copy().scale(a);
     }
     united() {
-        return this.copy.unit();
+        return this.copy().unit();
     }
 }
 
@@ -147,7 +147,7 @@ class Point extends Vector {
         return this.copy().scale(a);
     }
     united() {
-        return this.copy.unit();
+        return this.copy().unit();
     }
 }
 
